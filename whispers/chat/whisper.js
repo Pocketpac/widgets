@@ -7,7 +7,7 @@ var clip = require('../../clip');
  * @param  {Function} callback
  */
 exports.method = function (user, args, callback) {
-    var whisperTo      = args[0];
+    var whisperTo      = args[0].toLowerCase();
     var whisperMessage = args[1]
 
     if (typeof whisperTo !== 'string') {
@@ -19,7 +19,7 @@ exports.method = function (user, args, callback) {
     }
 
     // Check if the user is actually in chat
-    clip.mysql.queryAsync('SELECT `online` FROM `chat_user` WHERE `username` = ? AND channel = ? AND online=1;',
+    clip.mysql.queryAsync('SELECT `online` FROM `chat_user` WHERE LOWER(`username`)= ? AND channel = ? AND online=1;',
     [whisperTo, user.getChannel().id]).then(function (results) {
         if (results[0].length !== 0) {
             user.parseMessageAs(whisperMessage, function (err, message) {
